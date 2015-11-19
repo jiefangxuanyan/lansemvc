@@ -1,0 +1,231 @@
+{% load widget_tweaks %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>一个简单的图书管理系统</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+          integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/locales/bootstrap-datepicker.zh-CN.min.js"></script>
+    <style>
+        .btn-group {
+            display: flex;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $('.datepicker').datepicker({
+                format: 'yyyy/mm/dd',
+                language: 'zh-CN'
+            });
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <div class="tabbable" id="tabs-72986">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#panel-Book" data-toggle="tab">图书列表</a>
+            </li>
+            <li>
+                <a href="#panel-Author" data-toggle="tab">作者列表</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="panel-Book">
+                <form role="form" class="form-inline">
+                    <label for="inputAuthor">
+                        作者
+                    </label>
+                    <input type="text" class="form-control" name="filt_author"
+                           value="{{ filt_author }}"/>
+                    <button type="submit" class="btn btn-primary">
+                        筛选
+                    </button>
+                    <a href="?" class="btn btn-default" type="button">
+                        清空
+                    </a>
+                </form>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ISBN</th>
+                        <th>书名</th>
+                        <th>作者</th>
+                        <th>出版社</th>
+                        <th>出版日期</th>
+                        <th>价格</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for book in books %}
+                        {% if book.ISBN == modify_isbn %}
+                            <form action="?" role="form" class="form-inline" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="commit_modify" value="{{ book.ISBN }}"/>
+                                <tr class="info">
+                                    <td {% if modify_form.ISBN.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.ISBN type="hidden" %}
+                                        {{ book.ISBN }}
+                                        {{ modify_form.ISBN.errors }}
+                                    </td>
+                                    <td {% if modify_form.Title.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.Title class="form-control input-sm" %}
+                                        {{ modify_form.Title.errors }}
+                                    </td>
+                                    <td {% if modify_form.AuthorID.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.AuthorID class="form-control input-sm" %}
+                                        {{ modify_form.AuthorID.errors }}
+                                    </td>
+                                    <td {% if modify_form.Publisher.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.Publisher class="form-control input-sm" %}
+                                        {{ modify_form.Publisher.errors }}
+                                    </td>
+                                    <td {% if modify_form.PublishDate.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.PublishDate class="form-control input-sm datepicker" %}
+                                        {{ modify_form.PublishDate.errors }}
+                                    </td>
+                                    <td {% if modify_form.Price.errors %}class="danger"{% endif %}>
+                                        {% render_field modify_form.Price class="form-control input-sm" %}
+                                        {{ modify_form.Price.errors }}
+                                    </td>
+                                    <td {% if modify_form.errors %}class="danger"{% endif %}>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-{% if modify_form.errors %}danger{% else %}success{% endif %}">
+                                            确定
+                                        </button>
+                                    </td>
+                                </tr>
+                            </form>
+                        {% else %}
+                            <tr>
+                                <td>{{ book.ISBN }}</td>
+                                <td><a href="/details/?isbn={{ book.ISBN }}">{{ book.Title }}</a></td>
+                                <td>{{ book.AuthorID.Name }}</td>
+                                <td>{{ book.Publisher }}</td>
+                                <td>{{ book.PublishDate }}</td>
+                                <td>{{ book.Price }}</td>
+                                <td>
+                                    <div class="btn-group btn-group-xs" role="group" aria-label="operations">
+                                        <a href="?request_modify={{ book.ISBN }}" class="btn btn-info"
+                                           type="button">
+                                            修改
+                                        </a>
+                                        <a href="?remove_book={{ book.ISBN }}" class="btn btn-danger"
+                                           type="button">
+                                            删除
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                    <form action="?" role="form" class="form-inline" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="add_book"/>
+                        <tr class="success">
+                            <td {% if book_form.ISBN.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.ISBN class="form-control input-sm" %}
+                                {{ book_form.ISBN.errors }}
+                            </td>
+                            <td {% if book_form.Title.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.Title class="form-control input-sm" %}
+                                {{ book_form.Title.errors }}
+                            </td>
+                            <td {% if book_form.AuthorID.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.AuthorID class="form-control input-sm" %}
+                                {{ book_form.AuthorID.errors }}
+                            </td>
+                            <td {% if book_form.Publisher.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.Publisher class="form-control input-sm" %}
+                                {{ book_form.Publisher.errors }}
+                            </td>
+                            <td {% if book_form.PublishDate.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.PublishDate class="form-control input-sm datepicker" %}
+                                {{ book_form.PublishDate.errors }}
+                            </td>
+                            <td {% if book_form.Price.errors %}class="danger"{% endif %}>
+                                {% render_field book_form.Price class="form-control input-sm" %}
+                                {{ book_form.Price.errors }}
+                            </td>
+                            <td {% if book_form.errors %}class="danger"{% endif %}>
+                                <button type="submit"
+                                        class="btn btn-sm btn-{% if book_form.errors %}danger{% else %}success{% endif %}">
+                                    新增
+                                </button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tab-pane" id="panel-Author">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>姓名</th>
+                        <th>年龄</th>
+                        <th>国籍</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for author in authors %}
+                        <tr>
+                            <td>
+                                <a href="?filt_author={{ author.Name }}">{{ author.Name }}</a>
+                            </td>
+                            <td>{{ author.Age }}</td>
+                            <td>{{ author.Country }}</td>
+                            <td>
+                                <a href="?remove_author={{ author.AuthorID }}" class="btn btn-danger btn-xs"
+                                   type="button">
+                                    删除
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <form action="?" role="form" class="form-inline" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="add_author"/>
+                        <tr class="success">
+                            <td {% if author_form.Name.errors %}class="danger"{% endif %}>
+                                {% render_field author_form.Name class="form-control input-sm" %}
+                                {{ author_form.Name.errors }}
+                            </td>
+                            <td {% if author_form.Age.errors %}class="danger"{% endif %}>
+                                {% render_field author_form.Age class="form-control input-sm" %}
+                                {{ author_form.Age.errors }}
+                            </td>
+                            <td {% if author_form.Country.errors %}class="danger"{% endif %}>
+                                {% render_field author_form.Country class="form-control input-sm" %}
+                                {{ author_form.Country.errors }}
+                            </td>
+                            <td {% if author_form.errors %}class="danger"{% endif %}>
+                                <button type="submit"
+                                        class="btn btn-sm btn-{% if author_form.errors %}danger{% else %}success{% endif %}">
+                                    新增
+                                </button>
+                            </td>
+                        </tr>
+                    </form>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

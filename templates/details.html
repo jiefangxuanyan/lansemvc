@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图书详情</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+          integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"
+          integrity="sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"
+            integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ=="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div class="container">
+    <div class="list-group">
+        <div class="list-group-item active">
+            <h1 class="list-group-item-heading">
+                {{ book.Title }}
+            </h1>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">
+                ISBN
+            </h4>
+
+            <p class="list-group-item-text">
+                {{ book.ISBN }}
+            </p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">
+                出版社
+            </h4>
+
+            <p class="list-group-item-text">
+                {{ book.Publisher }}
+            </p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">
+                出版日期
+            </h4>
+
+            <p class="list-group-item-text">
+                {{ book.PublishDate }}
+            </p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">
+                价格
+            </h4>
+
+            <p class="list-group-item-text">
+                {{ book.Price }}
+            </p>
+        </div>
+        <div class="list-group-item">
+            <h4 class="list-group-item-heading">
+                作者信息
+            </h4>
+
+            <div class="list-group list-group-item-text">
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        姓名
+                    </h4>
+
+                    <p class="list-group-item-text">
+                        {{ book.AuthorID.Name }}
+                    </p>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        年龄
+                    </h4>
+
+                    <p class="list-group-item-text">
+                        {{ book.AuthorID.Age }}
+                    </p>
+                </div>
+                <div class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        国籍
+                    </h4>
+
+                    <p class="list-group-item-text">
+                        {{ book.AuthorID.Country }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        <a href="/show_list/" class="list-group-item active">返回</a>
+    </div>
+</div>
+</body>
+</html>
