@@ -5,6 +5,9 @@ import models
 import forms
 
 
+# Git实验：进行了一次修改。
+
+
 def index(request):
     return redirect(welcome, permanent=True)
 

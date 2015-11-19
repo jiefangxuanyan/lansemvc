@@ -2,6 +2,9 @@ from django import forms
 import models
 
 
+#Git实验：进行了两处修改。
+
+
 class AuthorForm(forms.ModelForm):
     class Meta:
         model = models.Author
